@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Results - Student Wellness</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: white;
+            border-radius: 50px;
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .nav-links a.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        /* Main Grid */
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        /* Form Panel */
+        .form-panel {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .form-panel h2 {
+            color: #333;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            border-bottom: 3px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102,126,234,0.3);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Results Panel */
+        .results-panel {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+
+        .results-header h2 {
+            color: #333;
+            font-size: 1.8rem;
+        }
+
+        .results-list {
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .result-card {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 6px solid;
+            transition: all 0.3s;
+        }
+
+        .result-card:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .result-card.weak { border-left-color: #ef4444; }
+        .result-card.average { border-left-color: #f59e0b; }
+        .result-card.strong { border-left-color: #10b981; }
+
+        .result-student {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .result-details {
+            display: flex;
+            gap: 20px;
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .edit-btn, .delete-btn {
+            padding: 6px 20px;
+            border: none;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .edit-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+        }
+
+        .edit-form {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px dashed #ccc;
+        }
+
+        .edit-form input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            margin-bottom: 10px;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .save-btn, .cancel-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background: #10b981;
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #94a3b8;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #999;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #333;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: #10b981;
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+
+        @media (max-width: 1000px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">🎓 Student Wellness</div>
+            <div class="nav-links">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/enter-results" class="active">Enter Results</a>
+                <a href="/timetable">Timetable</a>
+                <a href="/stress-manager">Stress Manager</a>
+                <a href="/fun-games">Fun Games</a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Left Panel - Form -->
+            <div class="form-panel">
+                <h2>✏️ Add New Result</h2>
+                
+                <!-- Simple Form for Adding Results -->
+                <form action="/submit-result" method="POST" onsubmit="return validateForm()">
+                    <div class="form-group">
+                        <label>👤 Student Name</label>
+                        <input type="text" name="student_name" id="student_name" placeholder="Enter student name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📚 Subject</label>
+                        <input type="text" name="subject" id="subject" placeholder="e.g., Mathematics" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📊 Marks (0-100)</label>
+                        <input type="number" name="marks" id="marks" min="0" max="100" step="0.01" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">➕ Add Result</button>
+                </form>
+                
+                <div style="margin-top: 20px; text-align: center; color: #666;">
+                    <small>Results are saved automatically and appear on the right</small>
+                </div>
+            </div>
+
+            <!-- Right Panel - Results List -->
+            <div class="results-panel">
+                <div class="results-header">
+                    <h2>📋 Recent Results</h2>
+                    <button class="btn btn-danger" id="clearAll" onclick="clearAllResults()">Clear All</button>
+                </div>
+                <div class="results-list" id="resultsList">
+                    <!-- Sample results for demonstration -->
+                    <div class="result-card strong" data-id="1" id="result-1">
+                        <div class="result-student">John Doe</div>
+                        <div class="result-details">
+                            <span>📚 Mathematics</span>
+                            <span>📊 85%</span>
+                            <span>🕐 2024-01-15 10:30</span>
+                        </div>
+                        <div class="result-actions">
+                            <button class="edit-btn" onclick="editResult(1)">Edit</button>
+                            <button class="delete-btn" onclick="deleteResult(1)">Delete</button>
+                        </div>
+                        <div class="edit-form" id="edit-1">
+                            <input type="text" id="edit-subject-1" value="Mathematics">
+                            <input type="number" id="edit-marks-1" value="85" min="0" max="100" step="0.01">
+                            <div class="edit-actions">
+                                <button class="save-btn" onclick="saveEdit(1)">Save</button>
+                                <button class="cancel-btn" onclick="cancelEdit(1)">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-card average" data-id="2" id="result-2">
+                        <div class="result-student">Jane Smith</div>
+                        <div class="result-details">
+                            <span>📚 Science</span>
+                            <span>📊 72%</span>
+                            <span>🕐 2024-01-14 14:20</span>
+                        </div>
+                        <div class="result-actions">
+                            <button class="edit-btn" onclick="editResult(2)">Edit</button>
+                            <button class="delete-btn" onclick="deleteResult(2)">Delete</button>
+                        </div>
+                        <div class="edit-form" id="edit-2">
+                            <input type="text" id="edit-subject-2" value="Science">
+                            <input type="number" id="edit-marks-2" value="72" min="0" max="100" step="0.01">
+                            <div class="edit-actions">
+                                <button class="save-btn" onclick="saveEdit(2)">Save</button>
+                                <button class="cancel-btn" onclick="cancelEdit(2)">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // Store results in localStorage for persistence
+        let results = JSON.parse(localStorage.getItem('studentResults')) || [];
+
+        // Initialize results display
+        function initializeResults() {
+            if (results.length > 0) {
+                displayResults();
+            }
+        }
+
+        // Display results
+        function displayResults() {
+            const resultsList = document.getElementById('resultsList');
+            if (!resultsList) return;
+            
+            if (results.length === 0) {
+                resultsList.innerHTML = '<div class="empty-state">📭 No results yet. Add your first result using the form!</div>';
+                return;
+            }
+
+            let html = '';
+            results.slice().reverse().forEach(result => {
+                const marks = parseFloat(result.marks);
+                let category = 'weak';
+                if (marks >= 75) category = 'strong';
+                else if (marks >= 60) category = 'average';
+
+                html += `
+                    <div class="result-card ${category}" data-id="${result.id}" id="result-${result.id}">
+                        <div class="result-student">${escapeHtml(result.student_name)}</div>
+                        <div class="result-details">
+                            <span>📚 ${escapeHtml(result.subject)}</span>
+                            <span>📊 ${marks}%</span>
+                            <span>🕐 ${result.timestamp || new Date().toLocaleString()}</span>
+                        </div>
+                        <div class="result-actions">
+                            <button class="edit-btn" onclick="editResult(${result.id})">Edit</button>
+                            <button class="delete-btn" onclick="deleteResult(${result.id})">Delete</button>
+                        </div>
+                        <div class="edit-form" id="edit-${result.id}">
+                            <input type="text" id="edit-subject-${result.id}" value="${escapeHtml(result.subject)}">
+                            <input type="number" id="edit-marks-${result.id}" value="${marks}" min="0" max="100" step="0.01">
+                            <div class="edit-actions">
+                                <button class="save-btn" onclick="saveEdit(${result.id})">Save</button>
+                                <button class="cancel-btn" onclick="cancelEdit(${result.id})">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsList.innerHTML = html;
+        }
+
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Show toast message
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Validate form before submission
+        function validateForm() {
+            const name = document.getElementById('student_name')?.value.trim();
+            const subject = document.getElementById('subject')?.value.trim();
+            const marks = document.getElementById('marks')?.value;
+            
+            if (!name || !subject || !marks) {
+                showToast('Please fill in all fields', 'error');
+                return false;
+            }
+            
+            if (marks < 0 || marks > 100) {
+                showToast('Marks must be between 0 and 100', 'error');
+                return false;
+            }
+            
+            // Add result to localStorage
+            const newResult = {
+                id: Date.now(),
+                student_name: name,
+                subject: subject,
+                marks: parseFloat(marks),
+                timestamp: new Date().toLocaleString()
+            };
+            
+            results.push(newResult);
+            localStorage.setItem('studentResults', JSON.stringify(results));
+            
+            // Clear form
+            document.getElementById('student_name').value = '';
+            document.getElementById('subject').value = '';
+            document.getElementById('marks').value = '';
+            
+            // Update display
+            displayResults();
+            showToast('Result added successfully!');
+            
+            return false; // Prevent actual form submission
+        }
+
+        // Edit functions
+        function editResult(id) {
+            // Hide all other edit forms
+            document.querySelectorAll('.edit-form').forEach(f => f.style.display = 'none');
+            const form = document.getElementById(`edit-${id}`);
+            if (form) form.style.display = 'block';
+        }
+
+        function cancelEdit(id) {
+            const form = document.getElementById(`edit-${id}`);
+            if (form) form.style.display = 'none';
+        }
+
+        function saveEdit(id) {
+            const subject = document.getElementById(`edit-subject-${id}`)?.value.trim();
+            const marks = parseFloat(document.getElementById(`edit-marks-${id}`)?.value);
+            
+            if (!subject) {
+                showToast('Subject cannot be empty', 'error');
+                return;
+            }
+            
+            if (isNaN(marks) || marks < 0 || marks > 100) {
+                showToast('Marks must be between 0 and 100', 'error');
+                return;
+            }
+            
+            // Update in array
+            const index = results.findIndex(r => r.id == id);
+            if (index !== -1) {
+                results[index].subject = subject;
+                results[index].marks = marks;
+                results[index].timestamp = new Date().toLocaleString();
+                localStorage.setItem('studentResults', JSON.stringify(results));
+                
+                displayResults();
+                showToast('Result updated successfully');
+            } else {
+                showToast('Result not found', 'error');
+            }
+        }
+
+        function deleteResult(id) {
+            if (!confirm('Delete this result?')) return;
+            
+            results = results.filter(r => r.id != id);
+            localStorage.setItem('studentResults', JSON.stringify(results));
+            
+            displayResults();
+            showToast('Result deleted');
+        }
+
+        function clearAllResults() {
+            if (!confirm('Are you sure you want to delete all results?')) return;
+            
+            results = [];
+            localStorage.removeItem('studentResults');
+            
+            displayResults();
+            showToast('All results cleared');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeResults();
+            
+            // Add form submit handler
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    validateForm();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

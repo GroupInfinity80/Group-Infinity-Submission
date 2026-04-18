@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Student Wellness</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Additional inline styles to ensure cards display properly */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+            gap: 25px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dashboard-card {
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-brand">Student Wellness Dashboard</div>
+        <div class="nav-profile">
+            <span class="username">Welcome, Student!</span>
+            <div class="profile-pic">
+                <img src="https://ui-avatars.com/api/?name=Student&background=667eea&color=fff&size=40" alt="Profile">
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Main Content -->
+    <main class="dashboard-main">
+        <h1 class="page-title">Your Wellness Hub</h1>
+        <p class="page-subtitle">Manage your academic life and well-being in one place</p>
+
+        <!-- Cards Container -->
+        <div class="cards-container">
+            <!-- Card 1: Enter Results -->
+            <div class="dashboard-card" onclick="window.location.href='/enter-results'">
+                <div class="card-inner">
+                    <div class="icon-wrapper">
+                        <span class="card-icon">📊</span>
+                    </div>
+                    <h3 class="card-title">Enter Results</h3>
+                    <p class="card-description">Record your academic achievements and track your progress with detailed analytics</p>
+                    
+                    <!-- Optional Stats Section -->
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <span>📈</span>
+                            <span>Track GPA</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>⭐</span>
+                            <span>Set Goals</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <span class="card-link">
+                            Go to Results <span class="arrow">→</span>
+                        </span>
+                        <span class="card-badge">New</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Stress Manager -->
+            <div class="dashboard-card" onclick="window.location.href='/stress-manager'">
+                <div class="card-inner">
+                    <div class="icon-wrapper">
+                        <span class="card-icon">🧘</span>
+                    </div>
+                    <h3 class="card-title">Stress Manager</h3>
+                    <p class="card-description">Find peace with guided exercises, breathing techniques, and motivational messages</p>
+                    
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <span>🎯</span>
+                            <span>5 min</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>💆</span>
+                            <span>Guided</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <span class="card-link">
+                            Relax Now <span class="arrow">→</span>
+                        </span>
+                        <span class="card-badge">Daily</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Fun Games -->
+            <div class="dashboard-card" onclick="window.location.href='/fun-games'">
+                <div class="card-inner">
+                    <div class="icon-wrapper">
+                        <span class="card-icon">🎮</span>
+                    </div>
+                    <h3 class="card-title">Fun Games</h3>
+                    <p class="card-description">Take a break with quizzes, puzzles, and brain teasers to refresh your mind</p>
+                    
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <span>🧩</span>
+                            <span>Puzzles</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>❓</span>
+                            <span>Quizzes</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <span class="card-link">
+                            Play Games <span class="arrow">→</span>
+                        </span>
+                        <span class="card-badge">5 games</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: AI Timetable -->
+            <div class="dashboard-card" onclick="window.location.href='/timetable'">
+                <div class="card-inner">
+                    <div class="icon-wrapper">
+                        <span class="card-icon">📅</span>
+                    </div>
+                    <h3 class="card-title">AI Timetable</h3>
+                    <p class="card-description">Get smart schedule based on your performance analysis and study patterns</p>
+                    
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <span>🤖</span>
+                            <span>AI Powered</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>⏰</span>
+                            <span>Smart</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <span class="card-link">
+                            View Timetable <span class="arrow">→</span>
+                        </span>
+                        <span class="card-badge">Personalized</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5: Resume Builder -->
+            <div class="dashboard-card" onclick="window.location.href='/resume-builder'">
+                <div class="card-inner">
+                    <div class="icon-wrapper">
+                        <span class="card-icon">📄</span>
+                    </div>
+                    <h3 class="card-title">Resume Builder</h3>
+                    <p class="card-description">Create professional resumes with live preview and instant PDF download</p>
+                    
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <span>✨</span>
+                            <span>Live Edit</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>📥</span>
+                            <span>PDF Export</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <span class="card-link">
+                            Build Now <span class="arrow">→</span>
+                        </span>
+                        <span class="card-badge">Premium</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        /* Ensure the new card design works with existing styles */
+        .dashboard-card {
+            position: relative;
+            background: linear-gradient(145deg, var(--white), #f8fafc);
+            border-radius: 24px;
+            padding: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 
+                0 10px 30px -10px rgba(0, 0, 0, 0.2),
+                inset 0 -2px 0 rgba(255, 255, 255, 0.8);
+            height: 100%;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            border-radius: 24px 24px 0 0;
+        }
+
+        /* Different accent colors for each card */
+        .dashboard-card:nth-child(1)::before { background: linear-gradient(90deg, #667eea, #764ba2); }
+        .dashboard-card:nth-child(2)::before { background: linear-gradient(90deg, #48bb78, #38a169); }
+        .dashboard-card:nth-child(3)::before { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+        .dashboard-card:nth-child(4)::before { background: linear-gradient(90deg, #8b5cf6, #6d28d9); }
+        .dashboard-card:nth-child(5)::before { background: linear-gradient(90deg, #ec4899, #db2777); }
+
+        .card-inner {
+            padding: 25px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px -5px rgba(102, 126, 234, 0.4);
+        }
+
+        .dashboard-card:nth-child(1) .icon-wrapper { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .dashboard-card:nth-child(2) .icon-wrapper { background: linear-gradient(135deg, #48bb78, #38a169); }
+        .dashboard-card:nth-child(3) .icon-wrapper { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+        .dashboard-card:nth-child(4) .icon-wrapper { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+        .dashboard-card:nth-child(5) .icon-wrapper { background: linear-gradient(135deg, #ec4899, #db2777); }
+
+        .card-icon {
+            font-size: 2rem;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 
+                0 20px 40px -15px rgba(0, 0, 0, 0.3),
+                inset 0 -2px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .dashboard-card:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+            display: inline-block;
+        }
+
+        .card-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .dashboard-card:nth-child(1) .card-title::after { background: linear-gradient(90deg, #667eea, #764ba2); }
+        .dashboard-card:nth-child(2) .card-title::after { background: linear-gradient(90deg, #48bb78, #38a169); }
+        .dashboard-card:nth-child(3) .card-title::after { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+        .dashboard-card:nth-child(4) .card-title::after { background: linear-gradient(90deg, #8b5cf6, #6d28d9); }
+        .dashboard-card:nth-child(5) .card-title::after { background: linear-gradient(90deg, #ec4899, #db2777); }
+
+        .dashboard-card:hover .card-title::after {
+            width: 60px;
+        }
+
+        .card-description {
+            color: var(--text-light);
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            background: rgba(102, 126, 234, 0.05);
+            padding: 4px 10px;
+            border-radius: 30px;
+        }
+
+        .card-footer {
+            border-top: 2px dashed rgba(102, 126, 234, 0.2);
+            padding-top: 15px;
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-link {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-card:hover .arrow {
+            transform: translateX(5px);
+        }
+
+        .card-badge {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        /* Animation for cards */
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dashboard-card {
+            animation: cardAppear 0.5s ease forwards;
+            animation-fill-mode: both;
+        }
+
+        .dashboard-card:nth-child(1) { animation-delay: 0.1s; }
+        .dashboard-card:nth-child(2) { animation-delay: 0.2s; }
+        .dashboard-card:nth-child(3) { animation-delay: 0.3s; }
+        .dashboard-card:nth-child(4) { animation-delay: 0.4s; }
+        .dashboard-card:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            
+            .card-title {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-card {
+                min-height: 280px;
+            }
+            
+            .icon-wrapper {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .card-icon {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</body>
+</html>

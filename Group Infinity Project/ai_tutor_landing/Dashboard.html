@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Serenity | Student Wellness Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --sky-50: #f0f9ff;
+            --sky-100: #e0f2fe;
+            --sky-200: #bae6fd;
+            --sky-300: #7dd3fc;
+            --sky-400: #38bdf8;
+            --sky-500: #0ea5e9;
+            --sky-600: #0284c7;
+            --sky-700: #0369a1;
+            --sage-100: #f1f8f0;
+            --sage-200: #e2f0e0;
+            --sage-300: #c5e3c0;
+            --sage-400: #a8d5a0;
+            --white-soft: rgba(255, 255, 255, 0.92);
+            --white-glass: rgba(255, 255, 255, 0.7);
+            --card-bg: rgba(255, 255, 255, 0.88);
+            --card-bg-solid: #ffffff;
+            --text-primary: #1e3a5f;
+            --text-secondary: #4a6a8b;
+            --text-light: #7c9bb5;
+            --text-soft: #5c7c9a;
+            --shadow-sm: 0 2px 12px rgba(0, 30, 50, 0.05);
+            --shadow-md: 0 8px 24px rgba(0, 40, 60, 0.08);
+            --shadow-lg: 0 16px 40px rgba(0, 50, 70, 0.1);
+            --shadow-xl: 0 24px 48px rgba(0, 50, 70, 0.12);
+            --space-xs: clamp(0.5rem, 1vw, 0.75rem);
+            --space-sm: clamp(0.75rem, 1.5vw, 1rem);
+            --space-md: clamp(1rem, 2vw, 1.5rem);
+            --space-lg: clamp(1.5rem, 3vw, 2rem);
+            --space-xl: clamp(2rem, 4vw, 2.5rem);
+            --space-2xl: clamp(2.5rem, 5vw, 3.5rem);
+            --radius-sm: 18px;
+            --radius-md: 24px;
+            --radius-lg: 32px;
+            --radius-xl: 40px;
+            --radius-full: 50%;
+            --transition-base: 0.25s ease;
+            --transition-slow: 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            --container-padding: clamp(1rem, 5vw, 2rem);
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, 'Poppins', sans-serif;
+            background: linear-gradient(145deg, #e8f4f8 0%, #d9eef5 40%, #cde8f0 100%);
+            color: var(--text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        .dashboard-wrapper {
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .peaceful-bg {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(ellipse at 30% 40%, #eef7fc 0%, #d4eaf3 60%, #c3e2ed 100%);
+        }
+
+        .cloud-layer {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 1000px;
+            filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.3);
+        }
+
+        .cloud-1 {
+            width: 380px;
+            height: 140px;
+            top: 10%;
+            left: -5%;
+            background: rgba(255, 255, 250, 0.65);
+            animation: driftCloud 28s infinite alternate ease-in-out;
+        }
+
+        .cloud-2 {
+            width: 520px;
+            height: 180px;
+            bottom: 15%;
+            right: -8%;
+            background: rgba(240, 248, 255, 0.55);
+            animation: driftCloudReverse 32s infinite alternate;
+        }
+
+        .cloud-3 {
+            width: 280px;
+            height: 100px;
+            top: 45%;
+            right: 12%;
+            background: rgba(255, 255, 245, 0.5);
+            animation: driftCloud 24s infinite alternate;
+        }
+
+        @keyframes driftCloud {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(40px) translateY(15px); }
+        }
+
+        @keyframes driftCloudReverse {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-35px) translateY(20px); }
+        }
+
+        .soft-wave {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: repeating-linear-gradient(transparent 0px, transparent 98px, rgba(160, 210, 225, 0.25) 98px, rgba(180, 225, 240, 0.2) 100px);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(135, 185, 210, 0.35);
+            box-shadow: 0 2px 15px rgba(0, 30, 40, 0.03);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-sm) var(--container-padding);
+            max-width: 1280px;
+            margin: 0 auto;
+            gap: var(--space-sm);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: clamp(1.2rem, 4vw, 1.65rem);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .brand-icon {
+            font-size: 1.8rem;
+            filter: drop-shadow(0 2px 6px rgba(0, 120, 150, 0.15));
+        }
+
+        .brand-text {
+            background: linear-gradient(135deg, #2c6e9e, #1e4a6e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .nav-profile {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            background: rgba(255, 255, 255, 0.55);
+            padding: 0.3rem 1rem 0.3rem 1.2rem;
+            border-radius: 60px;
+            border: 1px solid rgba(100, 160, 190, 0.3);
+            backdrop-filter: blur(4px);
+        }
+
+        .username {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #2c5a7a;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(145deg, #7ab3c8, #5d9bb5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px solid white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .main-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: var(--space-xl) var(--container-padding) var(--space-2xl);
+            position: relative;
+            z-index: 5;
+        }
+
+        .hero-center {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+            animation: fadeSoft 0.7s ease-out;
+        }
+
+        @keyframes fadeSoft {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-badge-light {
+            display: inline-block;
+            background: rgba(100, 170, 200, 0.18);
+            backdrop-filter: blur(6px);
+            padding: 0.35rem 1.2rem;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #2c6a8c;
+            margin-bottom: var(--space-md);
+            border: 1px solid rgba(100, 170, 200, 0.4);
+            letter-spacing: 0.3px;
+        }
+
+        .page-title-soft {
+            font-size: clamp(2rem, 7vw, 3.4rem);
+            font-weight: 700;
+            color: #1c4c6e;
+            margin-bottom: var(--space-sm);
+            letter-spacing: -0.3px;
+        }
+
+        .page-subtitle-soft {
+            font-size: clamp(0.95rem, 3vw, 1.2rem);
+            color: #4b7a9c;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cards-nature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+            gap: var(--space-xl);
+            margin: var(--space-xl) 0 var(--space-2xl);
+        }
+
+        .nature-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border-radius: var(--radius-lg);
+            transition: all var(--transition-base);
+            border: 1px solid rgba(140, 190, 210, 0.35);
+            overflow: hidden;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            animation: cardRise 0.55s ease forwards;
+            opacity: 0;
+            box-shadow: var(--shadow-sm);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nature-card:nth-child(1) { animation-delay: 0.05s; }
+        .nature-card:nth-child(2) { animation-delay: 0.12s; }
+        .nature-card:nth-child(3) { animation-delay: 0.19s; }
+        .nature-card:nth-child(4) { animation-delay: 0.26s; }
+
+        @keyframes cardRise {
+            0% {
+                opacity: 0;
+                transform: translateY(28px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(100, 170, 200, 0.6);
+            background: rgba(255, 255, 255, 0.94);
+        }
+
+        .card-accent-leaf {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            border-radius: 32px 32px 0 0;
+        }
+
+        .card-inner-nature {
+            padding: 1.8rem 1.5rem 1.6rem;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+        }
+
+        .icon-nature {
+            width: 66px;
+            height: 66px;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.4rem;
+            background: rgba(180, 215, 230, 0.5);
+            backdrop-filter: blur(4px);
+            transition: transform 0.2s;
+        }
+
+        .nature-card:hover .icon-nature {
+            transform: scale(1.02);
+        }
+
+        .card-icon-nature {
+            font-size: 2rem;
+        }
+
+        .card-title-nature {
+            font-size: 1.55rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            letter-spacing: -0.2px;
+        }
+
+        .card-desc-nature {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1.2rem;
+            flex-grow: 1;
+        }
+
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 1.3rem;
+        }
+
+        .tag {
+            background: rgba(120, 180, 205, 0.12);
+            padding: 0.25rem 0.9rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #2c789b;
+            border: 0.5px solid rgba(100, 160, 190, 0.3);
+        }
+
+        .metric-bubbles {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 1.2rem;
+        }
+
+        .bubble {
+            background: rgba(220, 240, 250, 0.6);
+            padding: 0.45rem 0.3rem;
+            border-radius: 24px;
+            text-align: center;
+            flex: 1;
+            transition: background 0.2s;
+        }
+
+        .bubble-emoji {
+            font-size: 1rem;
+            display: block;
+        }
+
+        .bubble-label {
+            font-size: 0.65rem;
+            color: #4c7b9b;
+            font-weight: 500;
+        }
+
+        .card-footer-nature {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(100, 160, 190, 0.25);
+            padding-top: 1rem;
+            margin-top: auto;
+        }
+
+        .link-nature {
+            font-weight: 600;
+            color: #2f7ca3;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            transition: gap 0.2s;
+        }
+
+        .nature-card:hover .link-nature {
+            gap: 12px;
+        }
+
+        .arrow-nature {
+            font-size: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .nature-card:hover .arrow-nature {
+            transform: translateX(4px);
+        }
+
+        .fresh-badge {
+            background: rgba(80, 160, 140, 0.15);
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #2c8c6e;
+        }
+
+        .inspire-nature {
+            background: rgba(235, 248, 245, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 48px;
+            padding: 1.5rem 2rem;
+            margin-top: var(--space-2xl);
+            border: 1px solid rgba(130, 190, 200, 0.45);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .quote-nature {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .quote-icon-nature {
+            font-size: 2rem;
+        }
+
+        .quote-text {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #2f6b85;
+            max-width: 500px;
+        }
+
+        .daily-nature-tip {
+            background: rgba(110, 180, 170, 0.18);
+            padding: 0.45rem 1.3rem;
+            border-radius: 60px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #297a66;
+            border: 0.5px solid rgba(80, 160, 140, 0.4);
+        }
+
+        .footer-nature {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-lg) var(--container-padding);
+            margin-top: var(--space-2xl);
+            border-top: 1px solid rgba(100, 150, 170, 0.25);
+            color: #54809b;
+            font-size: 0.75rem;
+        }
+
+        .footer-nature-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-nature-links a {
+            color: #487a97;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-nature-links a:hover {
+            color: #2c6e8f;
+        }
+
+        @media (max-width: 640px) {
+            .navbar {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .inspire-nature {
+                flex-direction: column;
+                text-align: center;
+            }
+            .cards-nature-grid {
+                gap: 1.2rem;
+            }
+            .card-title-nature {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .metric-bubbles {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        .dashboard-card, .nature-card {
+            min-height: 44px;
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-wrapper">
+    <div class="peaceful-bg"></div>
+    <div class="cloud-layer">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+    </div>
+    <div class="soft-wave"></div>
+
+    <main class="main-container">
+        <div class="hero-center">
+            <div class="hero-badge-light">🌱 nurture · grow · thrive</div>
+            <h1 class="page-title-soft">your peaceful wellness space</h1>
+            <p class="page-subtitle-soft">gentle tools for academic balance & mindful living</p>
+        </div>
+
+        <div class="cards-nature-grid">
+            <a href="/student_dashboard/templates/enter_results.html" class="nature-card">
+                <div class="card-accent-leaf" style="background: linear-gradient(90deg, #7ab3c8, #9bc4d8);"></div>
+                <div class="card-inner-nature">
+                    <div class="icon-nature">
+                        <span class="card-icon-nature">📘</span>
+                    </div>
+                    <h2 class="card-title-nature">Add Your Result</h2>
+                    <p class="card-desc-nature">record grades, track progress, and celebrate small academic wins with clarity.</p>
+                    <div class="tag-cloud">
+                        <span class="tag">📊 grade tracker</span>
+                        <span class="tag">🎯 goal setting</span>
+                    </div>
+                    <div class="card-footer-nature">
+                        <span class="link-nature">view insights <span class="arrow-nature">→</span></span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/student_dashboard/templates/stress_manager.html" class="nature-card">
+                <div class="card-accent-leaf" style="background: linear-gradient(90deg, #9bc4d8, #b2d5e4);"></div>
+                <div class="card-inner-nature">
+                    <div class="icon-nature">
+                        <span class="card-icon-nature">🕊️</span>
+                    </div>
+                    <h2 class="card-title-nature">MOC Test</h2>
+                    <p class="card-desc-nature">breathe, release tension, and restore inner peace with guided moments.</p>
+                    <div class="tag-cloud">
+                        <span class="tag">🌿 breathing</span>
+                        <span class="tag">🧘 mindful pause</span>
+                    </div>
+                    <div class="card-footer-nature">
+                        <span class="link-nature">breathe now <span class="arrow-nature">→</span></span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/student_dashboard/templates/fun_games.html" class="nature-card">
+                <div class="card-accent-leaf" style="background: linear-gradient(90deg, #b2d5e4, #cbe2ec);"></div>
+                <div class="card-inner-nature">
+                    <div class="icon-nature">
+                        <span class="card-icon-nature">🧩</span>
+                    </div>
+                    <h2 class="card-title-nature">Puzzle Game</h2>
+                    <p class="card-desc-nature">gentle puzzles, quizzes & brain breaks to refresh your focus.</p>
+                    <div class="tag-cloud">
+                        <span class="tag">🎲 memory games</span>
+                        <span class="tag">❓ trivia joy</span>
+                    </div>
+                    <div class="card-footer-nature">
+                        <span class="link-nature">play & unwind <span class="arrow-nature">→</span></span>
+                        <span class="fresh-badge">+4 games</span>
+                    </div>
+                </div>
+            </a>
+            <a href="/student_dashboard/templates/fun_games.html" class="nature-card">
+                <div class="card-accent-leaf" style="background: linear-gradient(90deg, #b2d5e4, #cbe2ec);"></div>
+                <div class="card-inner-nature">
+                    <div class="icon-nature">
+                        <span class="card-icon-nature">🧩</span>
+                    </div>
+                    <h2 class="card-title-nature">Personal Question Papeer</h2>
+                    <p class="card-desc-nature">gentle puzzles, quizzes & brain breaks to refresh your focus.</p>
+                    <div class="tag-cloud">
+                        <span class="tag">🎲 memory games</span>
+                        <span class="tag">❓ trivia joy</span>
+                    </div>
+                    <div class="card-footer-nature">
+                        <span class="link-nature">play & unwind <span class="arrow-nature">→</span></span>
+                        <span class="fresh-badge">+4 games</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/student_dashboard/templates/timetable.html" class="nature-card">
+                <div class="card-accent-leaf" style="background: linear-gradient(90deg, #cbe2ec, #d9edf2);"></div>
+                <div class="card-inner-nature">
+                    <div class="icon-nature">
+                        <span class="card-icon-nature">🗓️</span>
+                    </div>
+                    <h2 class="card-title-nature">Personalised Timetable Just For You</h2>
+                    <p class="card-desc-nature">ai-assisted schedule that adapts to your energy and study rhythm.</p>
+                    <div class="tag-cloud">
+                        <span class="tag">🤍 smart flow</span>
+                        <span class="tag">⏰ focus blocks</span>
+                    </div>
+                    <div class="card-footer-nature">
+                        <span class="link-nature">plan mindfully <span class="arrow-nature">→</span></span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div style="display: none;" aria-hidden="true">
+            <a href="/student_dashboard/templates/dashboard.html" id="hiddenDashboardLink">Dashboard</a>
+            <a href="/student_dashboard/templates/landing.html" id="hiddenLandingLink">Landing</a>
+        </div>
+
+        <div class="inspire-nature">
+            <div class="quote-nature">
+                <span class="quote-icon-nature">🌸</span>
+                <div class="quote-text">“like the sky, your mind can be vast and calm — even through storms.”</div>
+            </div>
+            <div class="daily-nature-tip">🍃 today's pause: 5 deep breaths, eyes closed</div>
+        </div>
+
+        <footer class="footer-nature">
+            <div>© 2025 serenity — student wellness with heart</div>
+            <div class="footer-nature-links">
+                <a href="#">mindful tips</a>
+                <a href="#">wellness guide</a>
+                <a href="#">support</a>
+                <a href="#">privacy</a>
+            </div>
+        </footer>
+    </main>
+</div>
+
+<script>
+    (function() {
+        const cards = document.querySelectorAll('.nature-card');
+        cards.forEach(card => {
+            card.style.cursor = 'pointer';
+            if (!card.getAttribute('href')) {
+                console.warn('Card missing href attribute');
+            }
+        });
+        const styleHidden = document.createElement('style');
+        styleHidden.textContent = `[aria-hidden="true"] { display: none !important; }`;
+        document.head.appendChild(styleHidden);
+        console.log('Serenity Dashboard — All wellness paths are correctly linked.');
+    })();
+</script>
+</body>
+</html>

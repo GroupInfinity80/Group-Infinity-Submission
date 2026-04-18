@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Wellness Dashboard - Your Academic Companion</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="landing-container">
+        <!-- Animated Background Elements -->
+        <div class="gradient-bg">
+            <div class="gradient-sphere"></div>
+            <div class="gradient-sphere-2"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="landing-content">
+            <!-- Floating Elements -->
+            <div class="floating-elements">
+                <div class="floating-element">📚</div>
+                <div class="floating-element">🧠</div>
+                <div class="floating-element">💪</div>
+                <div class="floating-element">🎯</div>
+            </div>
+
+            <!-- Hero Section -->
+            <div class="hero-section">
+                <div class="badge">✨ New: AI-Powered Wellness Features</div>
+                <h1 class="landing-title">
+                    <span class="gradient-text">Student Wellness</span>
+                    <span class="block">Dashboard</span>
+                </h1>
+                <p class="landing-description">
+                    Your complete companion for academic success and mental well-being. 
+                    Track your progress, manage stress, and have fun along the way!
+                </p>
+                
+                <!-- CTA Buttons -->
+                <div class="cta-group">
+                    <a href="{{ url_for('dashboard') }}" class="cta-button primary">
+                        <span>Get Started</span>
+                        <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <a href="#features" class="cta-button secondary">
+                        <span>Explore Features</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="features-grid" id="features">
+                <div class="feature-card" data-aos="fade-up">
+                    <div class="feature-icon-wrapper">
+                        <div class="feature-icon">📊</div>
+                    </div>
+                    <h3>Track Results</h3>
+                    <p>Record and monitor your academic performance with detailed analytics</p>
+                    <div class="feature-stats">
+                        <span>📈 Real-time updates</span>
+                        <span>📊 Progress charts</span>
+                    </div>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon-wrapper">
+                        <div class="feature-icon">🧘</div>
+                    </div>
+                    <h3>Stress Management</h3>
+                    <p>Relax with guided exercises, meditation, and daily motivation</p>
+                    <div class="feature-stats">
+                        <span>🧠 Guided sessions</span>
+                        <span>💆 Breathing exercises</span>
+                    </div>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon-wrapper">
+                        <div class="feature-icon">🎮</div>
+                    </div>
+                    <h3>Fun Games</h3>
+                    <p>Play and learn with interactive educational games</p>
+                    <div class="feature-stats">
+                        <span>🎯 Brain training</span>
+                        <span>🏆 Leaderboards</span>
+                    </div>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon-wrapper">
+                        <div class="feature-icon">📅</div>
+                    </div>
+                    <h3>Smart Planner</h3>
+                    <p>Organize your study schedule and never miss deadlines</p>
+                    <div class="feature-stats">
+                        <span>⏰ Reminders</span>
+                        <span>📋 Task manager</span>
+                    </div>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon-wrapper">
+                        <div class="feature-icon">👥</div>
+                    </div>
+                    <h3>Study Groups</h3>
+                    <p>Connect with peers and collaborate on projects</p>
+                    <div class="feature-stats">
+                        <span>💬 Chat rooms</span>
+                        <span>🤝 Group study</span>
+                    </div>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-icon-wrapper">
+                        <div class="feature-icon">🏆</div>
+                    </div>
+                    <h3>Achievements</h3>
+                    <p>Earn badges and rewards for your academic progress</p>
+                    <div class="feature-stats">
+                        <span>⭐ Milestones</span>
+                        <span>🎯 Daily goals</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="stats-section">
+                <div class="stat-item">
+                    <div class="stat-number">10k+</div>
+                    <div class="stat-label">Active Students</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Satisfaction Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Wellness Exercises</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Support Available</div>
+                </div>
+            </div>
+
+            <!-- Testimonial Section -->
+            <div class="testimonial-section">
+                <h2 class="section-title">What Students Say</h2>
+                <div class="testimonial-grid">
+                    <div class="testimonial-card">
+                        <div class="quote">"This dashboard helped me improve my grades while maintaining work-life balance!"</div>
+                        <div class="author">
+                            <div class="author-name">Sarah Johnson</div>
+                            <div class="author-title">Computer Science, Year 3</div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="quote">"The stress management features are a lifesaver during exam season."</div>
+                        <div class="author">
+                            <div class="author-name">Michael Chen</div>
+                            <div class="author-title">Engineering, Year 2</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom CTA -->
+            <div class="bottom-cta">
+                <h2>Ready to Transform Your Student Life?</h2>
+                <p>Join thousands of students already using Wellness Dashboard</p>
+                <a href="{{ url_for('dashboard') }}" class="cta-button primary large">
+                    Start Your Journey Today
+                    <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Footer -->
+            <footer class="landing-footer">
+                <p>© 2024 Student Wellness Dashboard. Empowering students for success.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact Us</a>
+                </div>
+            </footer>
+        </div>
+    </div>
+</body>
+</html>

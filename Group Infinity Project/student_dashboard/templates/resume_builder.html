@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Builder - Student Wellness</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='resume.css') }}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- html2pdf.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body class="resume-page">
+    <!-- Background Elements -->
+    <div class="stress-bg"></div>
+    <div class="stress-sphere"></div>
+    <div class="stress-sphere-2"></div>
+
+    <nav class="navbar glass-nav">
+        <div class="nav-brand">
+            <span class="brand-icon">📄</span>
+            <span class="brand-text">Resume Builder</span>
+        </div>
+        <div class="nav-links">
+            <a href="/dashboard" class="nav-link">
+                <span>Dashboard</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="builder-container">
+        <!-- Sidebar Editor -->
+        <aside class="editor-sidebar">
+            <div class="sidebar-header">
+                <h2>Resume Details</h2>
+                <p>Fill in your details or edit directly on the preview</p>
+            </div>
+
+            <div class="editor-sections">
+                <!-- Personal Info -->
+                <div class="accordion-item active">
+                    <button class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>👤 Personal Information</span>
+                        <span class="chevron">▾</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="input-group">
+                            <label>Full Name</label>
+                            <input type="text" id="input-name" placeholder="John Doe" oninput="updatePreview()">
+                        </div>
+                        <div class="input-group">
+                            <label>Professional Title</label>
+                            <input type="text" id="input-title" placeholder="Software Engineering Student" oninput="updatePreview()">
+                        </div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label>Email</label>
+                                <input type="email" id="input-email" placeholder="john@example.com" oninput="updatePreview()">
+                            </div>
+                            <div class="input-group">
+                                <label>Phone</label>
+                                <input type="text" id="input-phone" placeholder="+1 234 567 890" oninput="updatePreview()">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Location</label>
+                            <input type="text" id="input-location" placeholder="New York, USA" oninput="updatePreview()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>📝 Professional Summary</span>
+                        <span class="chevron">▾</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="input-group">
+                            <textarea id="input-summary" rows="4" placeholder="Briefly describe your background and goals..." oninput="updatePreview()"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experience -->
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>💼 Experience</span>
+                        <span class="chevron">▾</span>
+                    </button>
+                    <div class="accordion-content" id="experience-list">
+                        <!-- Dynamic Experience Items -->
+                        <button class="add-btn" onclick="addExperience()">+ Add Experience</button>
+                    </div>
+                </div>
+
+                <!-- Education -->
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>🎓 Education</span>
+                        <span class="chevron">▾</span>
+                    </button>
+                    <div class="accordion-content" id="education-list">
+                        <!-- Dynamic Education Items -->
+                        <button class="add-btn" onclick="addEducation()">+ Add Education</button>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>🛠 Skills</span>
+                        <span class="chevron">▾</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="input-group">
+                            <label>Skills (Comma separated)</label>
+                            <input type="text" id="input-skills" placeholder="Python, React, UI Design" oninput="updatePreview()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Controls -->
+            <div class="builder-actions">
+                <div class="template-selector">
+                    <label>Template</label>
+                    <select id="template-select" onchange="changeTemplate()">
+                        <option value="modern">Modern Professional</option>
+                        <option value="classic">Timeless Classic</option>
+                        <option value="creative">Creative Minimal</option>
+                    </select>
+                </div>
+                <button class="download-btn" onclick="downloadPDF()">
+                    <span class="btn-icon">📥</span> Download PDF
+                </button>
+            </div>
+        </aside>
+
+        <!-- Preview Area -->
+        <section class="preview-area">
+            <div class="preview-header">
+                <div class="preview-status">
+                    <span class="status-dot"></span> Live Preview
+                </div>
+                <div class="zoom-controls">
+                    <span class="zoom-label">A4 Paper View</span>
+                </div>
+            </div>
+            
+            <div class="resume-paper-wrapper">
+                <div id="resume-preview" class="resume-paper template-modern">
+                    <!-- Preview content will be injected here by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='resume.js') }}"></script>
+</body>
+</html>
