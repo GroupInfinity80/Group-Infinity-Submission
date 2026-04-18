@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stress Manager - Student Wellness</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Stress Manager Specific Styles */
+        :root {
+            --calm-primary: #6366f1;
+            --calm-secondary: #10b981;
+            --calm-accent: #8b5cf6;
+            --calm-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --calm-light: #a5b4fc;
+            --calm-soft: #c084fc;
+        }
+
+        /* Animated Background */
+        .stress-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            opacity: 0.9;
+        }
+
+        .stress-sphere {
+            position: absolute;
+            width: 60vmax;
+            height: 60vmax;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+            top: -20vmax;
+            right: -20vmax;
+            animation: stressFloat 25s ease-in-out infinite;
+        }
+
+        .stress-sphere-2 {
+            position: absolute;
+            width: 60vmax;
+            height: 60vmax;
+            border-radius: 50%;
+            background: radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.02));
+            bottom: -20vmax;
+            left: -20vmax;
+            animation: stressFloat 30s ease-in-out infinite reverse;
+        }
+
+        @keyframes stressFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(3%, 3%) rotate(120deg); }
+            66% { transform: translate(-3%, -3%) rotate(240deg); }
+        }
+
+        /* Navigation */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            color: #1f2937;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .nav-link:hover {
+            background: rgba(99, 102, 241, 0.2);
+            color: #4f46e5;
+            transform: translateX(-2px);
+        }
+
+        /* Page Container */
+        .page-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-main {
+            padding: 2rem 0 4rem;
+        }
+
+        /* Content Card */
+        .content-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .card-header {
+            padding: 2.5rem 2.5rem 1rem;
+            text-align: center;
+        }
+
+        .card-header-title {
+            font-size: clamp(2rem, 5vw, 2.8rem);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            color: #1f2937;
+        }
+
+        .card-header-subtitle {
+            color: #6b7280;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .card-body {
+            padding: 2rem 2.5rem 2.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Stress Cards */
+        .stress-card {
+            background: linear-gradient(135deg, #ffffff, #f9fafb);
+            border-radius: 24px;
+            padding: 1.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .stress-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .stress-card-title {
+            font-size: 1.5rem;
+            color: #1f2937;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+        }
+
+        /* Motivation Box */
+        .motivation-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .motivation-box::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 10px;
+            font-size: 8rem;
+            opacity: 0.1;
+            color: white;
+            font-family: serif;
+        }
+
+        .motivation-box::after {
+            content: '"';
+            position: absolute;
+            bottom: -60px;
+            right: 10px;
+            font-size: 8rem;
+            opacity: 0.1;
+            color: white;
+            font-family: serif;
+        }
+
+        /* Exercise Box */
+        .exercise-box {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 2rem 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+            font-weight: 500;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Tips List */
+        .tips-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1rem 0;
+        }
+
+        .tips-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px dashed rgba(99, 102, 241, 0.2);
+            color: #4b5563;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .tips-list li:last-child {
+            border-bottom: none;
+        }
+
+        .tips-list li::before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+            background: rgba(16, 185, 129, 0.1);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        /* Button Styles */
+        .stress-btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 0.9rem 1.5rem;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: auto;
+            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stress-btn:hover {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .stress-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stress-card {
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .stress-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .stress-card:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.75rem 1rem;
+            }
+
+            .page-container {
+                padding: 0 1rem;
+            }
+
+            .card-header {
+                padding: 1.5rem 1.5rem 0.5rem;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .stress-card {
+                padding: 1.25rem;
+            }
+
+            .stress-card-title {
+                font-size: 1.3rem;
+            }
+
+            .motivation-box,
+            .exercise-box {
+                padding: 1.5rem 1rem;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-link span {
+                display: none;
+            }
+
+            .nav-link {
+                padding: 0.5rem;
+            }
+
+            .card-header-title {
+                font-size: 1.8rem;
+            }
+
+            .tips-list li {
+                font-size: 0.9rem;
+            }
+
+            .stress-btn {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            .content-card {
+                background: rgba(17, 24, 39, 0.95);
+            }
+
+            .card-header-title,
+            .stress-card-title {
+                color: #f3f4f6;
+            }
+
+            .card-header-subtitle {
+                color: #9ca3af;
+            }
+
+            .stress-card {
+                background: linear-gradient(135deg, #1f2937, #111827);
+            }
+
+            .tips-list li {
+                color: #d1d5db;
+                border-bottom-color: rgba(99, 102, 241, 0.2);
+            }
+
+            .nav-brand {
+                color: #f3f4f6;
+            }
+
+            .nav-link {
+                color: #f3f4f6;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="stress-bg"></div>
+    <div class="stress-sphere"></div>
+    <div class="stress-sphere-2"></div>
+
+    <div class="page-container">
+        <!-- Navigation -->
+        <nav class="navbar glass-nav">
+            <div class="nav-brand">
+                <span class="brand-icon">🎓</span>
+                <span class="brand-text">Student Wellness</span>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('dashboard') }}" class="nav-link">
+                    <span class="nav-icon">←</span>
+                    <span>Back to Dashboard</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="page-main">
+            <div class="content-card">
+                <div class="card-header">
+                    <h1 class="card-header-title">
+                        <span class="title-icon">🧘</span>
+                        <span class="gradient-text">Stress Manager</span>
+                    </h1>
+                    <p class="card-header-subtitle">Take a moment for yourself</p>
+                </div>
+
+                <div class="card-body">
+                    <!-- Motivation Card -->
+                    <div class="stress-card">
+                        <h2 class="stress-card-title">
+                            <span>✨</span>
+                            Daily Motivation
+                        </h2>
+                        <div class="motivation-box" id="motivation-box">
+                            "{{ motivation }}"
+                        </div>
+                        <button class="stress-btn" onclick="getNewMotivation()">
+                            <span>✨</span> New Motivation
+                        </button>
+                    </div>
+
+                    <!-- Breathing Exercise Card -->
+                    <div class="stress-card">
+                        <h2 class="stress-card-title">
+                            <span>🌬️</span>
+                            Breathing Exercise
+                        </h2>
+                        <div class="exercise-box" id="exercise-box">
+                            {{ exercise }}
+                        </div>
+                        <button class="stress-btn" onclick="getNewExercise()">
+                            <span>🔄</span> New Exercise
+                        </button>
+                    </div>
+
+                    <!-- Quick Tips Card -->
+                    <div class="stress-card">
+                        <h2 class="stress-card-title">
+                            <span>💡</span>
+                            Quick Tips
+                        </h2>
+                        <ul class="tips-list">
+                            <li>Take a 5-minute break every hour</li>
+                            <li>Stay hydrated - drink water regularly</li>
+                            <li>Practice gratitude daily</li>
+                            <li>Get at least 7-8 hours of sleep</li>
+                            <li>Connect with friends and family</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function getNewMotivation() {
+            fetch('/get-new-motivation')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('motivation-box').textContent = '"' + data.motivation + '"';
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function getNewExercise() {
+            fetch('/get-new-exercise')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('exercise-box').textContent = data.exercise;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>

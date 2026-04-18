@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Games - Student Wellness</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='games.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Animated Background -->
+        <div class="game-bg">
+            <div class="game-sphere"></div>
+            <div class="game-sphere-2"></div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="navbar glass-nav">
+            <div class="nav-brand">
+                <span class="brand-icon">🎓</span>
+                <span class="brand-text">WellnessHub</span>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('dashboard') }}" class="nav-link">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round"/>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+            <div class="nav-user">
+                <div class="user-avatar">👤</div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="page-main">
+            <!-- Header Section -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">
+                        <span class="title-icon">🎮</span>
+                        <span class="gradient-text">Fun Games</span>
+                    </h1>
+                    <p class="page-subtitle">Challenge your mind with our collection of brain games</p>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-chip">
+                        <span class="chip-icon">🏆</span>
+                        <span>3 Games</span>
+                    </div>
+                    <div class="stat-chip">
+                        <span class="chip-icon">⭐</span>
+                        <span>Play & Earn</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Games Grid -->
+            <div class="games-grid">
+                <!-- Random Puzzle Game Card -->
+                <div class="game-card" onclick="window.location.href='Game_1.html'">
+                    <div class="game-card-header">
+                        <div class="game-icon-wrapper puzzle-bg">
+                            <span class="game-icon">🧩</span>
+                        </div>
+                        <div class="game-title-section">
+                            <h2 class="game-title">Random Puzzle</h2>
+                            <div class="game-badge">Brain Teaser</div>
+                        </div>
+                    </div>
+                    
+                    <div class="game-preview">
+                        <div class="preview-icon">🧩</div>
+                        <h3 class="preview-title">Solve the Puzzle</h3>
+                        <p class="preview-description">Challenge your mind with random puzzles and riddles that test your creativity</p>
+                    </div>
+                    
+                    <div class="game-features">
+                        <div class="feature-item">
+                            <span class="feature-icon">✨</span>
+                            <span>Random riddles</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">💡</span>
+                            <span>Logic puzzles</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🏆</span>
+                            <span>Earn points</span>
+                        </div>
+                    </div>
+                    
+                    <div class="game-footer play-now">
+                        <span class="play-text">Start Playing</span>
+                        <span class="play-arrow">→</span>
+                    </div>
+                </div>
+
+                <!-- Math Puzzle Game Card -->
+                <div class="game-card" onclick="window.location.href='Game_2.html'">
+                    <div class="game-card-header">
+                        <div class="game-icon-wrapper math-bg">
+                            <span class="game-icon">🔢</span>
+                        </div>
+                        <div class="game-title-section">
+                            <h2 class="game-title">Math Puzzle</h2>
+                            <div class="game-badge">Arithmetic</div>
+                        </div>
+                    </div>
+                    
+                    <div class="game-preview">
+                        <div class="preview-icon">🔢</div>
+                        <h3 class="preview-title">Solve Math Problems</h3>
+                        <p class="preview-description">Test your arithmetic skills with fun and challenging math puzzles</p>
+                    </div>
+                    
+                    <div class="game-features">
+                        <div class="feature-item">
+                            <span class="feature-icon">➕</span>
+                            <span>Addition</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">➖</span>
+                            <span>Subtraction</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✖️</span>
+                            <span>Multiplication</span>
+                        </div>
+                    </div>
+                    
+                    <div class="game-footer play-now">
+                        <span class="play-text">Start Playing</span>
+                        <span class="play-arrow">→</span>
+                    </div>
+                </div>
+
+                <!-- Number Guessing Game Card -->
+                <div class="game-card" onclick="window.location.href='Game_3.html'">
+                    <div class="game-card-header">
+                        <div class="game-icon-wrapper guessing-bg">
+                            <span class="game-icon">🎯</span>
+                        </div>
+                        <div class="game-title-section">
+                            <h2 class="game-title">Number Guessing</h2>
+                            <div class="game-badge">Fun Challenge</div>
+                        </div>
+                    </div>
+                    
+                    <div class="game-preview">
+                        <div class="preview-icon">🎯</div>
+                        <h3 class="preview-title">Guess the Number</h3>
+                        <p class="preview-description">Try to guess the secret number in as few tries as possible</p>
+                    </div>
+                    
+                    <div class="game-features">
+                        <div class="feature-item">
+                            <span class="feature-icon">🎲</span>
+                            <span>Random numbers</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">💭</span>
+                            <span>Hint system</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🏆</span>
+                            <span>Score tracking</span>
+                        </div>
+                    </div>
+                    
+                    <div class="game-footer play-now">
+                        <span class="play-text">Start Playing</span>
+                        <span class="play-arrow">→</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Stats Section -->
+            <div class="achievements-section">
+                <h3 class="section-subtitle">
+                    <span class="subtitle-icon">📊</span>
+                    Your Gaming Stats
+                </h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Puzzles Solved</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Math Problems</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Games Played</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Total Score</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Tips Section -->
+            <div class="tips-section">
+                <h3 class="section-subtitle">
+                    <span class="subtitle-icon">💡</span>
+                    Pro Gaming Tips
+                </h3>
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <span class="tip-icon">🧩</span>
+                        <p>Take your time with puzzles - creative thinking leads to solutions!</p>
+                    </div>
+                    <div class="tip-card">
+                        <span class="tip-icon">🔢</span>
+                        <p>Practice mental math daily to improve speed and accuracy</p>
+                    </div>
+                    <div class="tip-card">
+                        <span class="tip-icon">🎯</span>
+                        <p>Use logical deduction and process of elimination for number games</p>
+                    </div>
+                    <div class="tip-card">
+                        <span class="tip-icon">⭐</span>
+                        <p>Play daily to earn more points and unlock achievements</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

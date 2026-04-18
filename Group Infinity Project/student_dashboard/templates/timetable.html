@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable - Student Wellness</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .page-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navigation Styles */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: #f0f0f0;
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .page-main {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .timetable-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Overview Cards */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .overview-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: slideDown 0.5s ease;
+            transition: transform 0.3s ease;
+        }
+
+        .overview-card:hover {
+            transform: translateY(-5px);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            color: #666;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-value {
+            color: #333;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-subtitle {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* Main Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Subject Analysis Section */
+        .analysis-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 3px solid #f0f0f0;
+            padding-bottom: 1rem;
+        }
+
+        .subject-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .subject-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid;
+        }
+
+        .subject-item.weak {
+            border-left-color: #f56565;
+        }
+
+        .subject-item.average {
+            border-left-color: #ed8936;
+        }
+
+        .subject-item.strong {
+            border-left-color: #48bb78;
+        }
+
+        .subject-info h4 {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+
+        .subject-marks {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .subject-badge {
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-weak {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .badge-average {
+            background: #feebc8;
+            color: #c05621;
+        }
+
+        .badge-strong {
+            background: #c6f6d5;
+            color: #276749;
+        }
+
+        /* Study Plan Section */
+        .plan-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(5px);
+        }
+
+        .timeline-time {
+            min-width: 150px;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-subject {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-focus {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .priority-badge {
+            padding: 0.2rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .priority-high {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .priority-medium {
+            background: #feebc8;
+            color: #c05621;
+        }
+
+        .priority-low {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .priority-required {
+            background: #c3dafe;
+            color: #434190;
+        }
+
+        /* Recommendations Section */
+        .recommendations-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .recommendations-list {
+            list-style: none;
+        }
+
+        .recommendations-list li {
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 20px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 12px 32px;
+            border-radius: 40px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 20px;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+
+            .page-main {
+                padding: 1rem;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .timeline-time {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">🎓 Student Wellness - AI Study Planner</div>
+            <div class="nav-links">
+                <a href="enter_results.html" class="nav-link">Results Overview</a>
+                <a href="timetable.html" class="nav-link active">Timetable</a>
+                <a href="stress_manager.html" class="nav-link">Stress Manager</a>
+                <a href="fun_games.html" class="nav-link">Fun Games</a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="page-main">
+            <div class="timetable-container" id="timetableContainer">
+                <!-- Content will be populated by JavaScript -->
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading your study plan...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Get results from localStorage
+        function getResults() {
+            const stored = localStorage.getItem('studentResults');
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        // Generate study plan based on results
+        function generateStudyPlan(results) {
+            if (!results || results.length === 0) return [];
+            
+            // Group by subject and get average marks
+            const subjectStats = {};
+            results.forEach(result => {
+                if (!subjectStats[result.subject]) {
+                    subjectStats[result.subject] = {
+                        subject: result.subject,
+                        totalMarks: 0,
+                        count: 0,
+                        marks: []
+                    };
+                }
+                subjectStats[result.subject].totalMarks += result.marks;
+                subjectStats[result.subject].count++;
+                subjectStats[result.subject].marks.push(result.marks);
+            });
+
+            // Calculate averages and determine status
+            const subjects = Object.values(subjectStats).map(subj => ({
+                subject: subj.subject,
+                marks: Math.round((subj.totalMarks / subj.count) * 10) / 10,
+                count: subj.count,
+                status: (subj.totalMarks / subj.count) < 60 ? 'Weak' : 
+                        (subj.totalMarks / subj.count) < 75 ? 'Average' : 'Strong'
+            }));
+
+            // Sort by marks (lowest first for priority)
+            subjects.sort((a, b) => a.marks - b.marks);
+
+            return subjects;
+        }
+
+        // Generate AI study plan timeline
+        function generateTimeline(subjects) {
+            const timeSlots = [
+                { time: '7:00 AM - 8:30 AM', desc: 'Morning Study Session' },
+                { time: '9:00 AM - 10:30 AM', desc: 'Focus Session' },
+                { time: '11:00 AM - 12:30 PM', desc: 'Practice Session' },
+                { time: '2:00 PM - 3:30 PM', desc: 'Revision' },
+                { time: '4:00 PM - 5:30 PM', desc: 'Problem Solving' },
+                { time: '7:00 PM - 8:30 PM', desc: 'Evening Review' }
+            ];
+
+            const studyPlan = [];
+            
+            // Prioritize weak subjects in morning
+            subjects.forEach((subject, index) => {
+                if (index < timeSlots.length) {
+                    let priority = 'Low';
+                    let focus = 'Review and practice';
+                    
+                    if (subject.marks < 60) {
+                        priority = 'High';
+                        focus = 'Focus on fundamentals and practice problems';
+                    } else if (subject.marks < 75) {
+                        priority = 'Medium';
+                        focus = 'Practice complex problems and review';
+                    } else {
+                        priority = 'Low';
+                        focus = 'Quick revision and advanced topics';
+                    }
+
+                    studyPlan.push({
+                        time: timeSlots[index].time,
+                        subject: subject.subject,
+                        focus: focus,
+                        priority: priority
+                    });
+                }
+            });
+
+            return studyPlan;
+        }
+
+        // Get weak subjects for recommendations
+        function getWeakSubjects(subjects) {
+            return subjects.filter(s => s.marks < 60);
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Render the timetable
+        function renderTimetable() {
+            const results = getResults();
+            const container = document.getElementById('timetableContainer');
+            
+            if (!results || results.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <h3>No Results Available</h3>
+                        <p>Add your academic results to get a personalized AI-generated study plan.</p>
+                        <a href="enter_results.html" class="btn-primary">Add Results Now</a>
+                    </div>
+                `;
+                return;
+            }
+
+            const subjects = generateStudyPlan(results);
+            const studyPlan = generateTimeline(subjects);
+            const weakSubjects = getWeakSubjects(subjects);
+            
+            const totalResults = results.length;
+            const totalMarks = results.reduce((sum, r) => sum + r.marks, 0);
+            const avgMarks = (totalMarks / totalResults).toFixed(1);
+            const weakCount = subjects.filter(s => s.marks < 60).length;
+            const strongCount = subjects.filter(s => s.marks >= 75).length;
+
+            // Generate subject analysis HTML
+            const subjectAnalysisHtml = subjects.map(subject => {
+                const statusClass = subject.status.toLowerCase();
+                return `
+                    <div class="subject-item ${statusClass}">
+                        <div class="subject-info">
+                            <h4>${escapeHtml(subject.subject)}</h4>
+                            <div class="subject-marks">${subject.marks}%</div>
+                        </div>
+                        <span class="subject-badge badge-${statusClass}">
+                            ${subject.status}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+
+            // Generate study plan HTML
+            const studyPlanHtml = studyPlan.map(item => {
+                const priorityClass = item.priority.toLowerCase();
+                return `
+                    <div class="timeline-item">
+                        <div class="timeline-time">${item.time}</div>
+                        <div class="timeline-content">
+                            <div class="timeline-subject">${escapeHtml(item.subject)}</div>
+                            <div class="timeline-focus">${item.focus}</div>
+                        </div>
+                        <span class="priority-badge priority-${priorityClass}">
+                            ${item.priority} Priority
+                        </span>
+                    </div>
+                `;
+            }).join('');
+
+            // Generate recommendations HTML
+            const recommendationsHtml = weakSubjects.map(subject => {
+                if (subject.marks < 50) {
+                    return `<li>🔴 <strong>${escapeHtml(subject.subject)} (${subject.marks}%):</strong> Critical - Start from basics, focus on fundamental concepts daily</li>`;
+                } else {
+                    return `<li>🟡 <strong>${escapeHtml(subject.subject)} (${subject.marks}%):</strong> Needs improvement - Practice more problems and review regularly</li>`;
+                }
+            }).join('');
+
+            // Full HTML template
+            container.innerHTML = `
+                <!-- Overview Cards -->
+                <div class="overview-grid">
+                    <div class="overview-card">
+                        <div class="card-icon">📊</div>
+                        <div class="card-title">Total Results</div>
+                        <div class="card-value">${totalResults}</div>
+                        <div class="card-subtitle">academic records</div>
+                    </div>
+
+                    <div class="overview-card">
+                        <div class="card-icon">📈</div>
+                        <div class="card-title">Average Score</div>
+                        <div class="card-value">${avgMarks}%</div>
+                        <div class="card-subtitle">overall performance</div>
+                    </div>
+
+                    <div class="overview-card">
+                        <div class="card-icon">⚠️</div>
+                        <div class="card-title">Need Focus</div>
+                        <div class="card-value">${weakCount}</div>
+                        <div class="card-subtitle">subjects below 60%</div>
+                    </div>
+
+                    <div class="overview-card">
+                        <div class="card-icon">🌟</div>
+                        <div class="card-title">Strong Areas</div>
+                        <div class="card-value">${strongCount}</div>
+                        <div class="card-subtitle">subjects above 75%</div>
+                    </div>
+                </div>
+
+                <!-- Main Content Grid -->
+                <div class="content-grid">
+                    <!-- Subject Analysis -->
+                    <div class="analysis-section">
+                        <h2 class="section-title">
+                            <span>📚</span>
+                            Subject Analysis
+                        </h2>
+                        <div class="subject-list">
+                            ${subjectAnalysisHtml}
+                        </div>
+                    </div>
+
+                    <!-- Study Plan -->
+                    <div class="plan-section">
+                        <h2 class="section-title">
+                            <span>⏰</span>
+                            AI-Generated Study Plan
+                        </h2>
+                        <div class="timeline">
+                            ${studyPlanHtml}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommendations -->
+                <div class="recommendations-section">
+                    <h2 class="section-title">
+                        <span>💡</span>
+                        Personalized Recommendations
+                    </h2>
+                    <ul class="recommendations-list">
+                        ${recommendationsHtml}
+                        <li>📝 Take short breaks every 45 minutes to maintain focus and productivity</li>
+                        <li>🎯 Practice previous year papers on weekends to improve exam readiness</li>
+                        <li>💡 Create mind maps and summaries for complex topics in weak subjects</li>
+                        <li>💪 Review strong subjects once a week to maintain proficiency</li>
+                        <li>😴 Ensure 7-8 hours of sleep for better memory retention and focus</li>
+                        <li>🚰 Stay hydrated and take short walks during breaks</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            renderTimetable();
+            
+            // Prevent form resubmission on refresh
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.href);
+            }
+        });
+    </script>
+</body>
+</html>

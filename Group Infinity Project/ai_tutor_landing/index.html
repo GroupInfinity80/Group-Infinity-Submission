@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>AI Tutor | Lumina — Adaptive Learning Paths</title>
+    <!-- Chart.js & Lucide Icons -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ----- FONTS & GLOBAL ----- */
+        body {
+            font-family: 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.5;
+            transition: background-color 0.25s ease, color 0.2s ease;
+        }
+
+        /* ----- ROOT: DARK MODE (default) ----- */
+        :root {
+            --primary: #4f46e5;
+            --primary-glow: #6366f1;
+            --secondary: #c084fc;
+            --accent: #2dd4bf;
+            --accent-soft: #5eead4;
+            
+            /* Dark mode values */
+            --bg-deep: #020617;
+            --bg-main: #0a0f1e;
+            --bg-card: rgba(15, 23, 42, 0.75);
+            --glass-border: rgba(45, 212, 191, 0.2);
+            --glass-border-light: rgba(255, 255, 255, 0.08);
+            --text-main: #f1f5f9;
+            --text-muted: #a0aec0;
+            --text-soft: #cbd5e1;
+            --card-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.5);
+            --neon-shadow: 0 0 12px rgba(79, 70, 229, 0.4);
+            --btn-gradient: linear-gradient(105deg, #4f46e5 0%, #a855f7 100%);
+            --btn-hover: linear-gradient(105deg, #6366f1 0%, #c084fc 100%);
+            --input-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        /* LIGHT MODE overrides */
+        body.light-mode {
+            --bg-main: #f8fafc;
+            --bg-deep: #eef2ff;
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(79, 70, 229, 0.25);
+            --glass-border-light: rgba(0, 0, 0, 0.05);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --text-soft: #334155;
+            --card-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.1);
+            --neon-shadow: 0 4px 14px rgba(79, 70, 229, 0.2);
+            --input-bg: rgba(0, 0, 0, 0.03);
+        }
+
+        /* Global glass + elements */
+        .glass {
+            background: var(--bg-card);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        body.light-mode .glass {
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Layout & container */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header / Navigation */
+        header {
+            padding: 1.2rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(16px);
+            background: rgba(10, 15, 30, 0.7);
+            transition: 0.25s;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        body.light-mode header {
+            background: rgba(248, 250, 252, 0.8);
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(130deg, var(--accent), var(--secondary));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2.2rem;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+            opacity: 0.8;
+        }
+        .nav-links a:hover {
+            opacity: 1;
+            color: var(--accent);
+        }
+        .nav-btns {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: 0.2s;
+        }
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: #0f172a;
+            border-color: var(--accent);
+        }
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            cursor: pointer;
+        }
+        .btn-primary {
+            background: var(--btn-gradient);
+            border: none;
+            color: white;
+            box-shadow: var(--neon-shadow);
+        }
+        .btn-primary:hover {
+            background: var(--btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(79, 70, 229, 0.4);
+        }
+        .btn.glass {
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 90px;
+            gap: 3rem;
+        }
+        .hero-content {
+            flex: 1;
+        }
+        .hero-title {
+            font-size: 4.2rem;
+            line-height: 1.15;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #b9c8ff 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body.light-mode .hero-title {
+            background: linear-gradient(135deg, #1e293b, #4f46e5);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-subtext {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 520px;
+            margin-bottom: 2rem;
+        }
+        .hero-images {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+        .robot-img {
+            width: 80%;
+            max-width: 380px;
+            filter: drop-shadow(0 20px 30px rgba(45, 212, 191, 0.25));
+            transition: filter 0.3s;
+        }
+
+        /* Dashboard section */
+        .dashboard-preview {
+            padding: 100px 0 80px;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            letter-spacing: -0.01em;
+            background: linear-gradient(120deg, var(--accent), var(--secondary));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .preview-container {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.2rem;
+        }
+        .stat-card {
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 1.5rem;
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+        }
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+        }
+        .feature-icon {
+            width: 2rem;
+            height: 2rem;
+            stroke-width: 1.7;
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+        }
+        .subject-selector {
+            margin-top: 3rem;
+            text-align: center;
+        }
+        .subject-btn {
+            margin: 0 0.5rem;
+            padding: 0.6rem 1.6rem;
+            border-radius: 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .subject-btn.active {
+            background: var(--primary);
+            border-color: var(--accent);
+            color: white;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        /* features grid */
+        .features {
+            padding: 80px 0;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        .feature-card {
+            padding: 2rem;
+            border-radius: 1.8rem;
+            transition: 0.25s;
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+        }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent);
+        }
+        .steps-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+        .step {
+            text-align: center;
+            max-width: 240px;
+        }
+        footer {
+            padding: 3rem 0;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+        }
+        
+        /* ATTRACTIVE MODAL STYLES - White clean + subtle shadow */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            max-width: 580px;
+            width: 90%;
+            padding: 2rem 2rem 2.5rem;
+            border-radius: 2rem;
+            position: relative;
+            animation: modalFadeIn 0.3s ease;
+            background: #ffffff;
+            border: 1px solid rgba(79, 70, 229, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        body.light-mode .modal-content {
+            background: #ffffff;
+            color: #0f172a;
+        }
+        body:not(.light-mode) .modal-content {
+            background: #1e293b;
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.8rem;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .modal-close:hover {
+            color: var(--accent);
+            transform: rotate(90deg);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+            font-size: 0.9rem;
+            color: #334155;
+        }
+        body:not(.light-mode) .form-group label {
+            color: #cbd5e1;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 1.2rem;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.2s;
+            color: #0f172a;
+        }
+        body:not(.light-mode) .form-group input,
+        body:not(.light-mode) .form-group select {
+            background: #0f172a;
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
+        }
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            margin: 1.5rem 0;
+            max-height: 280px;
+            overflow-y: auto;
+            padding-right: 0.3rem;
+        }
+        .subject-item {
+            padding: 0.75rem;
+            border-radius: 1.2rem;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #ffffff;
+            font-weight: 500;
+            color: #1e293b;
+        }
+        body:not(.light-mode) .subject-item {
+            background: #0f172a;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        .subject-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            background: #f1f5f9;
+        }
+        body:not(.light-mode) .subject-item:hover {
+            background: #1e293b;
+        }
+        .subject-item.selected {
+            background: linear-gradient(135deg, #4f46e5, #a855f7);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+        .onboarding-step {
+            display: none;
+        }
+        .onboarding-step.active {
+            display: block;
+        }
+        .step-header {
+            text-align: center;
+            margin-bottom: 1.8rem;
+        }
+        .step-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #4f46e5, #c084fc);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .step-header p {
+            color: #64748b;
+        }
+        body:not(.light-mode) .step-header p {
+            color: #94a3b8;
+        }
+        @media (max-width: 900px) {
+            .preview-container { grid-template-columns: 1fr; }
+            .hero { flex-direction: column; text-align: center; padding-bottom: 4rem; }
+            .hero-subtext { margin-left: auto; margin-right: auto; }
+            .nav-links { display: none; }
+            .hero-title { font-size: 2.8rem; }
+        }
+        .float-anim {
+            animation: float 5s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
+        }
+        canvas#performanceChart {
+            max-height: 260px;
+            width: 100%;
+        }
+        .chart-area {
+            background: rgba(0,0,0,0.2);
+            border-radius: 1.5rem;
+            padding: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <div class="container nav">
+            <div class="logo">AI Tutor.</div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how-it-works">How it Works</a></li>
+                <li><a href="#dashboard">Dashboard</a></li>
+            </ul>
+            <div class="nav-btns">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <i data-lucide="moon"></i>
+                </button>
+                <a href="#" class="btn" id="loginBtn">Login</a>
+                <a href="#" class="btn btn-primary" id="signUpBtn">Sign Up</a>
+            </div>
+            <div id="userProfile" style="display: none; align-items: center; gap: 1rem;">
+                <span id="welcomeMsg" style="font-weight: 600;"></span>
+                <button id="logoutBtn" class="btn glass" style="padding: 0.4rem 1rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero container">
+            <div class="hero-content">
+                <h1 class="hero-title">Learn Smarter with Your <span style="color: var(--accent); background: none; -webkit-text-fill-color: var(--accent);">Personal AI</span> Tutor</h1>
+                <p class="hero-subtext">Adaptive learning paths based on your unique strengths and weaknesses. Experience the future of education.</p>
+                <div class="cta-group">
+                    <a href="#dashboard" class="btn btn-primary">Start Learning Free</a>
+                    <a href="#" class="btn glass" style="margin-left: 1rem;">Watch Demo</a>
+                </div>
+            </div>
+            <div class="hero-images">
+                <img src="https://placehold.co/500x500/1e293b/2dd4bf?text=🤖&font=roboto" alt="AI Robot" class="robot-img float-anim">
+            </div>
+        </section>
+
+        <section id="dashboard" class="dashboard-preview">
+            <div class="container">
+                <h2 class="section-title">Your Live Performance</h2>
+                <div class="preview-container glass">
+                    <div class="chart-area">
+                        <canvas id="performanceChart" width="400" height="250"></canvas>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card"><i data-lucide="target" class="feature-icon"></i><div class="stat-value" id="statAccuracy">92%</div><div class="stat-label">Accuracy Rate</div></div>
+                        <div class="stat-card"><i data-lucide="zap" class="feature-icon"></i><div class="stat-value" id="statTime">4.5h</div><div class="stat-label">Time Saved/Week</div></div>
+                        <div class="stat-card"><i data-lucide="book-open" class="feature-icon"></i><div class="stat-value" id="statTopics">12</div><div class="stat-label">Topics Mastered</div></div>
+                        <div class="stat-card"><i data-lucide="trending-up" class="feature-icon"></i><div class="stat-value" id="statProgress">+15%</div><div class="stat-label">Weekly Progress</div></div>
+                    </div>
+                </div>
+                <div class="subject-selector">
+                    <p style="margin-bottom: 20px; color: var(--text-muted);">Switch Subject to see adaptive path:</p>
+                    <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                        <button class="btn subject-btn active" data-subject="math">📐 Mathematics</button>
+                        <button class="btn subject-btn" data-subject="physics">⚛️ Physics</button>
+                        <button class="btn subject-btn" data-subject="coding">💻 Coding</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="container">
+                <h2 class="section-title">Smart Learning Features</h2>
+                <div class="feature-grid">
+                    <div class="feature-card glass"><i data-lucide="layout" class="feature-icon"></i><h3>Personalized Quizzes</h3><p style="color: var(--text-muted);">AI generates questions targeting your knowledge gaps.</p></div>
+                    <div class="feature-card glass"><i data-lucide="sliders" class="feature-icon"></i><h3>Adaptive Difficulty</h3><p style="color: var(--text-muted);">The platform evolves as you grow, keeping you in flow.</p></div>
+                    <div class="feature-card glass"><i data-lucide="award" class="feature-icon"></i><h3>Concept Mastery</h3><p style="color: var(--text-muted);">Visual tracking of every concept you've conquered.</p></div>
+                    <div class="feature-card glass"><i data-lucide="sparkles" class="feature-icon"></i><h3>AI Recommendations</h3><p style="color: var(--text-muted);">Smart tips on what to study next based on patterns.</p></div>
+                    <div class="feature-card glass"><i data-lucide="bar-chart-3" class="feature-icon"></i><h3>Performance Analytics</h3><p style="color: var(--text-muted);">Deep dive into your progress with beautiful visualizations.</p></div>
+                    <div class="feature-card glass"><i data-lucide="globe" class="feature-icon"></i><h3>Global Rank</h3><p style="color: var(--text-muted);">See how you stack up against learners worldwide.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" style="padding: 80px 0;">
+            <div class="container">
+                <h2 class="section-title">How It Works</h2>
+                <div class="steps-container">
+                    <div class="step"><div class="stat-value" style="color: var(--secondary);">01</div><h3>Take Assessment</h3><p style="color: var(--text-muted);">Quick diagnosis of your current level.</p></div>
+                    <div class="step"><div class="stat-value" style="color: var(--secondary);">02</div><h3>AI Analysis</h3><p style="color: var(--text-muted);">Our neural net maps your skill tree.</p></div>
+                    <div class="step"><div class="stat-value" style="color: var(--secondary);">03</div><h3>Personalized Path</h3><p style="color: var(--text-muted);">Get a generated roadmap for success.</p></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="logo">AI Tutor.</div>
+            <p style="color: var(--text-muted); margin-top: 1rem;">Built for the future of education.</p>
+            <div style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 2rem;">
+                <a href="#" style="color: var(--text-muted); text-decoration: none;">Twitter</a>
+                <a href="#" style="color: var(--text-muted); text-decoration: none;">Discord</a>
+                <a href="#" style="color: var(--text-muted); text-decoration: none;">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="onboardingModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <div class="onboarding-step active" id="step1">
+                <div class="step-header"><h2>✨ Welcome to AI Tutor</h2><p>Create your personalized learning journey</p></div>
+                <div class="form-group"><label>Full Name</label><input type="text" id="userName" placeholder="Enter your full name"></div>
+                <div class="form-group"><label>Education Level</label><select id="userClass">
+                    <option value="1-5">Grade 1-5 (Primary)</option><option value="6-8">Grade 6-8 (Middle)</option><option value="9-10">Grade 9-10 (Secondary)</option>
+                    <option value="11-12">Grade 11-12 (Higher Secondary)</option><option value="graduation">Graduation (UG)</option>
+                </select></div>
+                <div class="form-group" id="streamGroup" style="display: none;"><label>Stream (11th/12th)</label><select id="userStream"><option value="">Select Stream</option><option value="science">Science (PCM/PCB)</option><option value="commerce">Commerce</option><option value="arts">Arts/Humanities</option></select></div>
+                <div class="form-group" id="branchGroup" style="display: none;"><label>Branch (Graduation)</label><select id="userBranch"><option value="">Select Branch</option><option value="cse">Computer Science Engg</option><option value="ece">Electronics & Comm</option><option value="mech">Mechanical Engg</option><option value="civil">Civil Engg</option><option value="bcom">Bachelor of Commerce</option><option value="bba">BBA (Management)</option><option value="ba">BA (Arts)</option><option value="bsc">B.Sc (Pure Sciences)</option></select></div>
+                <button class="btn btn-primary" id="nextStep" style="width:100%;">Continue →</button>
+            </div>
+            <div class="onboarding-step" id="step2">
+                <div class="step-header"><h2>📚 Choose Your Subjects</h2><p>Subjects based on your class & stream</p></div>
+                <div class="subject-grid" id="subjectGrid"></div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.8rem;"><button class="btn glass" id="prevStep" style="flex:1;">← Back</button><button class="btn btn-primary" id="finishOnboarding" style="flex:2;">🚀 Start Learning</button></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        // Theme handling
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        function setTheme(theme) {
+            if (theme === 'light') { body.classList.add('light-mode'); localStorage.setItem('theme', 'light'); const icon = themeToggle.querySelector('i'); if(icon) icon.setAttribute('data-lucide', 'sun'); }
+            else { body.classList.remove('light-mode'); localStorage.setItem('theme', 'dark'); const icon = themeToggle.querySelector('i'); if(icon) icon.setAttribute('data-lucide', 'moon'); }
+            lucide.createIcons();
+        }
+        if (localStorage.getItem('theme') === 'light') setTheme('light'); else setTheme('dark');
+        themeToggle.addEventListener('click', () => { if (body.classList.contains('light-mode')) setTheme('dark'); else setTheme('light'); });
+
+        // --- Subject mapping logic based on class & stream ---
+        function getSubjectsByClassAndStream(gradeValue, streamValue = '') {
+            if (gradeValue === '1-5') return ['English', 'Hindi', 'Mathematics', 'Environmental Studies (EVS)', 'Art & Craft', 'Physical Education', 'Computer'];
+            if (gradeValue === '6-8') return ['English', 'Hindi', 'Mathematics', 'Science', 'Social Studies', 'Computer Science', 'Art & Craft', 'Physical Education'];
+            if (gradeValue === '9-10') return ['English', 'Hindi', 'Mathematics', 'Science (Physics, Chem, Bio)', 'Social Science', 'Computer Applications'];
+            if (gradeValue === '11-12') {
+                if (streamValue === 'science') return ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'English'];
+                if (streamValue === 'commerce') return ['Accountancy', 'Business Studies', 'Economics', 'Mathematics', 'English'];
+                if (streamValue === 'arts') return ['History', 'Political Science', 'Sociology', 'Psychology', 'English'];
+                return ['Physics', 'Chemistry', 'Mathematics', 'English', 'Physical Education'];
+            }
+            if (gradeValue === 'graduation') {
+                if (streamValue === 'cse') return ['Data Structures', 'Algorithms', 'Operating Systems', 'Python', 'Discrete Maths'];
+                if (streamValue === 'ece') return ['Signals', 'Networks', 'Electronics', 'Digital Logic', 'Mathematics'];
+                if (streamValue === 'mech') return ['Thermodynamics', 'Mechanics', 'Manufacturing', 'Materials', 'Mathematics'];
+                if (streamValue === 'civil') return ['Structural Analysis', 'Fluid Mechanics', 'Surveying', 'Construction', 'Mathematics'];
+                if (streamValue === 'bcom') return ['Financial Accounting', 'Business Law', 'Economics', 'Taxation', 'Management'];
+                if (streamValue === 'bba') return ['Principles of Mgmt', 'Marketing', 'HR', 'Finance', 'Business Analytics'];
+                if (streamValue === 'ba') return ['Philosophy', 'Literature', 'History', 'Sociology', 'Political Science'];
+                if (streamValue === 'bsc') return ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'Statistics'];
+                return ['Mathematics', 'English', 'Communication', 'Critical Thinking'];
+            }
+            return ['Mathematics', 'English', 'General Knowledge'];
+        }
+
+        // DOM elements
+        const classSelect = document.getElementById('userClass');
+        const streamGroup = document.getElementById('streamGroup');
+        const branchGroup = document.getElementById('branchGroup');
+        const userStream = document.getElementById('userStream');
+        const userBranch = document.getElementById('userBranch');
+        const subjectGrid = document.getElementById('subjectGrid');
+        let selectedSubjects = [];
+
+        function updateEducationFields() {
+            const val = classSelect.value;
+            if (val === '11-12') { streamGroup.style.display = 'block'; branchGroup.style.display = 'none'; userBranch.value = ''; }
+            else if (val === 'graduation') { streamGroup.style.display = 'none'; branchGroup.style.display = 'block'; userStream.value = ''; }
+            else { streamGroup.style.display = 'none'; branchGroup.style.display = 'none'; userStream.value = ''; userBranch.value = ''; }
+            renderDynamicSubjects();
+        }
+
+        function renderDynamicSubjects() {
+            const gradeVal = classSelect.value;
+            let streamVal = '';
+            if (gradeVal === '11-12') streamVal = userStream.value;
+            else if (gradeVal === 'graduation') streamVal = userBranch.value;
+            const subjects = getSubjectsByClassAndStream(gradeVal, streamVal);
+            subjectGrid.innerHTML = '';
+            selectedSubjects = [];
+            subjects.forEach(sub => {
+                const div = document.createElement('div');
+                div.classList.add('subject-item');
+                div.innerText = sub;
+                div.addEventListener('click', () => {
+                    div.classList.toggle('selected');
+                    if(div.classList.contains('selected')) selectedSubjects.push(sub);
+                    else selectedSubjects = selectedSubjects.filter(s => s !== sub);
+                });
+                subjectGrid.appendChild(div);
+            });
+        }
+
+        classSelect.addEventListener('change', updateEducationFields);
+        userStream.addEventListener('change', renderDynamicSubjects);
+        userBranch.addEventListener('change', renderDynamicSubjects);
+        updateEducationFields();
+
+        // Chart initialization
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        let performanceChart = new Chart(ctx, { type: 'line', data: { labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], datasets: [{ label: 'Mastery Score', data: [68, 74, 82, 89], borderColor: '#2dd4bf', backgroundColor: 'rgba(45,212,191,0.1)', tension: 0.3, fill: true }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: getComputedStyle(document.body).getPropertyValue('--text-main') } } } } });
+        function updateChartColors() { const textColor = getComputedStyle(document.body).getPropertyValue('--text-main'); if(performanceChart) { performanceChart.options.plugins.legend.labels.color = textColor; performanceChart.update(); } }
+        function updateChartData(data) { performanceChart.data.datasets[0].data = data; performanceChart.update(); }
+        
+        const subjectBtns = document.querySelectorAll('.subject-btn');
+        const statAccuracy = document.getElementById('statAccuracy'), statTopics = document.getElementById('statTopics'), statProgress = document.getElementById('statProgress');
+        subjectBtns.forEach(btn => { btn.addEventListener('click', () => { subjectBtns.forEach(b => b.classList.remove('active')); btn.classList.add('active'); const subject = btn.dataset.subject; if(subject === 'math') { statAccuracy.innerText = '94%'; statTopics.innerText = '14'; statProgress.innerText = '+18%'; updateChartData([72,79,86,94]); } else if(subject === 'physics') { statAccuracy.innerText = '87%'; statTopics.innerText = '9'; statProgress.innerText = '+12%'; updateChartData([65,70,78,87]); } else { statAccuracy.innerText = '91%'; statTopics.innerText = '11'; statProgress.innerText = '+21%'; updateChartData([69,75,83,91]); } }); });
+        
+        // Modal & Auth
+        const modal = document.getElementById('onboardingModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const nextStepBtn = document.getElementById('nextStep');
+        const prevStepBtn = document.getElementById('prevStep');
+        const finishBtn = document.getElementById('finishOnboarding');
+        const step1 = document.getElementById('step1'), step2 = document.getElementById('step2');
+        const userProfileDiv = document.getElementById('userProfile'), welcomeMsgSpan = document.getElementById('welcomeMsg'), logoutBtn = document.getElementById('logoutBtn');
+        const navBtnsDiv = document.querySelector('.nav-btns'), loginBtn = document.getElementById('loginBtn'), signUpBtn = document.getElementById('signUpBtn');
+
+        function openModal() { modal.style.display = 'flex'; step1.classList.add('active'); step2.classList.remove('active'); selectedSubjects = []; document.querySelectorAll('.subject-item').forEach(item => item.classList.remove('selected')); renderDynamicSubjects(); }
+        function closeModal() { modal.style.display = 'none'; }
+        nextStepBtn.addEventListener('click', () => {
+            const name = document.getElementById('userName').value.trim();
+            if(!name) { alert("Please enter your full name"); return; }
+            const selectedClass = classSelect.value;
+            if(selectedClass === '11-12' && !userStream.value) { alert("Please select your stream"); return; }
+            if(selectedClass === 'graduation' && !userBranch.value) { alert("Please select your branch"); return; }
+            step1.classList.remove('active'); step2.classList.add('active');
+        });
+        prevStepBtn.addEventListener('click', () => { step2.classList.remove('active'); step1.classList.add('active'); });
+        finishBtn.addEventListener('click', () => {
+            const name = document.getElementById('userName').value.trim();
+            if(selectedSubjects.length === 0) { alert("Please select at least one subject"); return; }
+            const userData = { name, grade: classSelect.value, stream: userStream.value, branch: userBranch.value, subjects: selectedSubjects };
+            localStorage.setItem('userName', name);
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userData', JSON.stringify(userData));
+            closeModal();
+            updateUIAfterLogin(name);
+        });
+        function updateUIAfterLogin(userName) { if(navBtnsDiv) navBtnsDiv.style.display = 'none'; userProfileDiv.style.display = 'flex'; welcomeMsgSpan.innerText = `🌟 Hi, ${userName}`; }
+        function logout() { localStorage.removeItem('isLoggedIn'); localStorage.removeItem('userName'); localStorage.removeItem('userData'); if(navBtnsDiv) navBtnsDiv.style.display = 'flex'; userProfileDiv.style.display = 'none'; }
+        signUpBtn.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+        loginBtn.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+        closeModalBtn.addEventListener('click', closeModal);
+        logoutBtn.addEventListener('click', logout);
+        window.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+        if(localStorage.getItem('isLoggedIn') === 'true') { const savedName = localStorage.getItem('userName') || 'Learner'; updateUIAfterLogin(savedName); }
+        
+        const observer = new MutationObserver(() => { updateChartColors(); });
+        observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+        updateChartColors();
+        window.addEventListener('load', () => { lucide.createIcons(); updateChartColors(); });
+    </script>
+</body>
+</html>
